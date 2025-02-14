@@ -1,4 +1,8 @@
-import { createUserIfNotExists, deleteUserByName, listAllUsers } from "./keycloak/users";
+import {
+  createUserIfNotExists,
+  deleteUserByName,
+  listAllUsers,
+} from "./keycloak/users";
 import { Command } from "commander";
 import { listGroups } from "./keycloak/groups";
 import { listOrganizations } from "./keycloak/organizations";
@@ -20,7 +24,7 @@ const newKeycloakUser = {
 program
   .name("admin-client-example")
   .description("Admin client example for Keycloak")
-  .version("1.0.0")
+  .version("1.0.0");
 
 program
   .command("list-users")
@@ -28,13 +32,16 @@ program
   .action(async () => {
     try {
       const keycloakUsers = await listAllUsers(realm);
-      console.log("Keycloak users:", keycloakUsers.map(user => user.username));
+      console.log(
+        "Keycloak users:",
+        keycloakUsers.map((user) => user.username)
+      );
     } catch (error) {
       console.error("Error listing users:", error);
     }
   });
 
-  program
+program
   .command("create-user")
   .description("Create a new user in Keycloak")
   .option("-u, --username <username>", "Username of the new user")
@@ -48,7 +55,7 @@ program
       username: username || newKeycloakUser.username,
       email: email || newKeycloakUser.email,
       firstName: firstName || newKeycloakUser.firstName,
-      lastName: lastName || newKeycloakUser.lastName
+      lastName: lastName || newKeycloakUser.lastName,
     };
     try {
       await createUserIfNotExists(realm, updatedKeycloakUser);
@@ -58,7 +65,7 @@ program
     }
   });
 
-  program
+program
   .command("delete-user")
   .description("Delete a user in Keycloak")
   .option("-n, --name <name>", "Name of the user to delete")
@@ -79,7 +86,10 @@ program
   .action(async () => {
     try {
       const keycloakGroups = await listGroups(realm);
-      console.log("Keycloak groups:", keycloakGroups.map(group => group.name));
+      console.log(
+        "Keycloak groups:",
+        keycloakGroups.map((group) => group.name)
+      );
     } catch (error) {
       console.error("Error listing groups:", error);
     }
@@ -91,7 +101,10 @@ program
   .action(async () => {
     try {
       const keycloakOrganizations = await listOrganizations(realm);
-      console.log("Keycloak organizations:", keycloakOrganizations.map(organization => organization.name));
+      console.log(
+        "Keycloak organizations:",
+        keycloakOrganizations.map((organization) => organization.name)
+      );
     } catch (error) {
       console.error("Error listing organizations:", error);
     }

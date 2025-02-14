@@ -5,7 +5,8 @@
   "scripts": {
     "build": "tsc",
     "start": "tsx src/index.ts",
-    "generate-keycloak-client": "openapi-generator-cli generate -i https://www.keycloak.org/docs-api/26.1.0/rest-api/openapi.yaml -o ./src/generated/keycloak-client -c generator-config.json -g typescript-fetch --skip-validate-spec"
+    "generate-keycloak-client": "openapi-generator-cli generate -i https://www.keycloak.org/docs-api/26.1.0/rest-api/openapi.yaml -o ./src/generated/keycloak-client -c generator-config.json -g typescript-fetch --skip-validate-spec",
+    "format": "prettier --write ."
   },
   "keywords": [],
   "author": "",
@@ -16,6 +17,7 @@
     "@types/jsonwebtoken": "^9.0.7",
     "@types/node": "^22.10.7",
     "@types/react": "^19.0.8",
+    "prettier": "^3.5.1",
     "ts-node": "^10.9.2",
     "tsx": "^4.19.2",
     "typescript": "^5.7.3"

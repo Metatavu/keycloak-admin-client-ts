@@ -8,13 +8,13 @@ import type { OrganizationDomainRepresentation } from "../generated/keycloak-cli
  * @param name organization name
  */
 export const findOrganizationByName = async (realm: string, name: string) => {
-	const { organizationsApi } = await getApiClientConfiguration();
+  const { organizationsApi } = await getApiClientConfiguration();
 
-	return organizationsApi.adminRealmsRealmOrganizationsGet({
-		realm: realm,
-		exact: true,
-		search: name,
-	});
+  return organizationsApi.adminRealmsRealmOrganizationsGet({
+    realm: realm,
+    exact: true,
+    search: name,
+  });
 };
 
 /**
@@ -23,10 +23,10 @@ export const findOrganizationByName = async (realm: string, name: string) => {
  * @param realm realm name
  */
 export const listOrganizations = async (realm: string) => {
-	const { organizationsApi } = await getApiClientConfiguration();
-	return organizationsApi.adminRealmsRealmOrganizationsGet({
-		realm: realm,
-	});
+  const { organizationsApi } = await getApiClientConfiguration();
+  return organizationsApi.adminRealmsRealmOrganizationsGet({
+    realm: realm,
+  });
 };
 
 /**
@@ -37,35 +37,35 @@ export const listOrganizations = async (realm: string) => {
  * @param name organization name
  */
 export const createOrganization = async (
-	realm: string,
-	name: string,
-	domains: OrganizationDomainRepresentation[],
+  realm: string,
+  name: string,
+  domains: OrganizationDomainRepresentation[]
 ) => {
-	const { organizationsApi } = await getApiClientConfiguration();
+  const { organizationsApi } = await getApiClientConfiguration();
 
-	console.log(`Creating organization ${name}`);
+  console.log(`Creating organization ${name}`);
 
-	// Check if the organization already exists
-	const existingOrganization = await findOrganizationByName(realm, name);
+  // Check if the organization already exists
+  const existingOrganization = await findOrganizationByName(realm, name);
 
-	console.log("Existing organization with this name:", existingOrganization);
+  console.log("Existing organization with this name:", existingOrganization);
 
-	if (existingOrganization.length > 0) {
-		throw new Error(`Organization ${name} already exists`);
-	}
+  if (existingOrganization.length > 0) {
+    throw new Error(`Organization ${name} already exists`);
+  }
 
-	try {
-		return organizationsApi.adminRealmsRealmOrganizationsPost({
-			realm: realm,
-			organizationRepresentation: {
-				name: name,
-				domains: new Set(domains),
-				enabled: true,
-			},
-		});
-	} catch (error) {
-		console.error("Error creating organization:", error);
-	}
+  try {
+    return organizationsApi.adminRealmsRealmOrganizationsPost({
+      realm: realm,
+      organizationRepresentation: {
+        name: name,
+        domains: new Set(domains),
+        enabled: true,
+      },
+    });
+  } catch (error) {
+    console.error("Error creating organization:", error);
+  }
 };
 
 /**
@@ -77,17 +77,17 @@ export const createOrganization = async (
  * @param userIds user ids
  */
 export const addUsersToOrganization = async (
-	realm: string,
-	organizationId: string,
-	userIds: Array<string>,
+  realm: string,
+  organizationId: string,
+  userIds: Array<string>
 ) => {
-	const { organizationsApi } = await getApiClientConfiguration();
+  const { organizationsApi } = await getApiClientConfiguration();
 
-	const userIdsString = userIds.join(",");
+  const userIdsString = userIds.join(",");
 
-	return organizationsApi.adminRealmsRealmOrganizationsOrgIdMembersPost({
-		realm: realm,
-		orgId: organizationId,
-		body: userIdsString,
-	});
+  return organizationsApi.adminRealmsRealmOrganizationsOrgIdMembersPost({
+    realm: realm,
+    orgId: organizationId,
+    body: userIdsString,
+  });
 };

@@ -14,22 +14,22 @@ import { listGroups } from "./groups";
  * @param max max
  */
 const listUsers = async (
-	realm: string,
-	username?: string,
-	email?: string,
-	first?: number,
-	max?: number,
+  realm: string,
+  username?: string,
+  email?: string,
+  first?: number,
+  max?: number
 ) => {
-	const { usersApi } = await getApiClientConfiguration();
-	return usersApi.adminRealmsRealmUsersGet({
-		realm: realm,
-		username: username,
-		email: email,
-		first: first,
-		max: max,
-		exact: true,
-		briefRepresentation: false,
-	});
+  const { usersApi } = await getApiClientConfiguration();
+  return usersApi.adminRealmsRealmUsersGet({
+    realm: realm,
+    username: username,
+    email: email,
+    first: first,
+    max: max,
+    exact: true,
+    briefRepresentation: false,
+  });
 };
 
 /**
@@ -38,31 +38,31 @@ const listUsers = async (
  * @param realm realm name
  */
 export const listAllUsers = async (realm: string) => {
-	const { usersApi } = await getApiClientConfiguration();
-	const max = 100;
-	let start = 0;
-	const allUsers: UserRepresentation[] = [];
+  const { usersApi } = await getApiClientConfiguration();
+  const max = 100;
+  let start = 0;
+  const allUsers: UserRepresentation[] = [];
 
-	// Fetch users in batches until all users are retrieved
-	while (true) {
-		const usersResponse = await usersApi.adminRealmsRealmUsersGet({
-			realm: realm,
-			max: max,
-			first: start,
-		});
+  // Fetch users in batches until all users are retrieved
+  while (true) {
+    const usersResponse = await usersApi.adminRealmsRealmUsersGet({
+      realm: realm,
+      max: max,
+      first: start,
+    });
 
-		const users = usersResponse;
-		console.log(`Fetched ${users.length} users`);
-		if (users.length === 0) {
-			break;
-		}
+    const users = usersResponse;
+    console.log(`Fetched ${users.length} users`);
+    if (users.length === 0) {
+      break;
+    }
 
-		allUsers.push(...users);
+    allUsers.push(...users);
 
-		start += max;
-	}
+    start += max;
+  }
 
-	return allUsers;
+  return allUsers;
 };
 
 /**
@@ -72,11 +72,11 @@ export const listAllUsers = async (realm: string) => {
  * @param userId user id
  */
 export const listUserGroups = async (realm: string, userId: string) => {
-	const { usersApi } = await getApiClientConfiguration();
-	return usersApi.adminRealmsRealmUsersUserIdGroupsGet({
-		realm: realm,
-		userId: userId,
-	});
+  const { usersApi } = await getApiClientConfiguration();
+  return usersApi.adminRealmsRealmUsersUserIdGroupsGet({
+    realm: realm,
+    userId: userId,
+  });
 };
 
 /**
@@ -86,32 +86,32 @@ export const listUserGroups = async (realm: string, userId: string) => {
  * @param userData keycloak user representation
  */
 export const createUserIfNotExists = async (
-	realm: string,
-	userData: UserRepresentation,
+  realm: string,
+  userData: UserRepresentation
 ) => {
-	const { usersApi } = await getApiClientConfiguration();
-	const { username, email, firstName, lastName, groups } = userData;
+  const { usersApi } = await getApiClientConfiguration();
+  const { username, email, firstName, lastName, groups } = userData;
 
-	// Check if the user already exists
-	const existingUser = await listUsers(realm, username, email);
+  // Check if the user already exists
+  const existingUser = await listUsers(realm, username, email);
 
-	if (existingUser.length > 0) {
-		console.log(`User ${username} already exists`);
-		return; // Skip creation if user already exists
-	}
+  if (existingUser.length > 0) {
+    console.log(`User ${username} already exists`);
+    return; // Skip creation if user already exists
+  }
 
-	// Create the new user in Keycloak
-	return usersApi.adminRealmsRealmUsersPost({
-		realm: realm,
-		userRepresentation: {
-			username: username,
-			email: email,
-			firstName: firstName,
-			lastName: lastName,
-			groups: groups,
-			enabled: true,
-		},
-	});
+  // Create the new user in Keycloak
+  return usersApi.adminRealmsRealmUsersPost({
+    realm: realm,
+    userRepresentation: {
+      username: username,
+      email: email,
+      firstName: firstName,
+      lastName: lastName,
+      groups: groups,
+      enabled: true,
+    },
+  });
 };
 
 /**
@@ -122,43 +122,43 @@ export const createUserIfNotExists = async (
  * @param groupNames group names
  */
 export const updateUserGroups = async (
-	realm: string,
-	userId: string,
-	groupNames: string[],
+  realm: string,
+  userId: string,
+  groupNames: string[]
 ) => {
-	const { usersApi } = await getApiClientConfiguration();
+  const { usersApi } = await getApiClientConfiguration();
 
-	// Fetch all user groups and group names in one call
-	const userGroups = await listUserGroups(realm, userId);
-	const userGroupNames = new Set(userGroups.map((group) => group.name));
+  // Fetch all user groups and group names in one call
+  const userGroups = await listUserGroups(realm, userId);
+  const userGroupNames = new Set(userGroups.map((group) => group.name));
 
-	// Fetch all groups in one call
-	const allGroups = await listGroups(realm);
-	const groupNameToIdMap = Object.fromEntries(
-		allGroups.map((group) => [group.name, group.id]),
-	);
+  // Fetch all groups in one call
+  const allGroups = await listGroups(realm);
+  const groupNameToIdMap = Object.fromEntries(
+    allGroups.map((group) => [group.name, group.id])
+  );
 
-	for (const groupName of groupNames) {
-		if (userGroupNames.has(groupName)) {
-			console.log(`User ${userId} is already in group ${groupName}`);
-			continue;
-		}
+  for (const groupName of groupNames) {
+    if (userGroupNames.has(groupName)) {
+      console.log(`User ${userId} is already in group ${groupName}`);
+      continue;
+    }
 
-		const groupId = groupNameToIdMap[groupName];
-		if (!groupId) {
-			console.warn(`Group ${groupName} not found`);
-			continue;
-		}
+    const groupId = groupNameToIdMap[groupName];
+    if (!groupId) {
+      console.warn(`Group ${groupName} not found`);
+      continue;
+    }
 
-		// Update user groups in Keycloak
-		await usersApi.adminRealmsRealmUsersUserIdGroupsGroupIdPut({
-			realm: realm,
-			userId: userId,
-			groupId: groupId,
-		});
+    // Update user groups in Keycloak
+    await usersApi.adminRealmsRealmUsersUserIdGroupsGroupIdPut({
+      realm: realm,
+      userId: userId,
+      groupId: groupId,
+    });
 
-		console.log(`User ${userId} added to group ${groupName}`);
-	}
+    console.log(`User ${userId} added to group ${groupName}`);
+  }
 };
 
 /**
@@ -168,17 +168,17 @@ export const updateUserGroups = async (
  * @param realm realm name
  */
 export const deleteUser = async (realm: string, userId: string) => {
-	const { usersApi } = await getApiClientConfiguration();
+  const { usersApi } = await getApiClientConfiguration();
 
-	console.log(`Deleting user with id ${userId}`);
-	try {
-		usersApi.adminRealmsRealmUsersUserIdDelete({
-			realm: realm,
-			userId: userId,
-		});
-	} catch (error) {
-		console.warn("Error deleting user:", error);
-	}
+  console.log(`Deleting user with id ${userId}`);
+  try {
+    usersApi.adminRealmsRealmUsersUserIdDelete({
+      realm: realm,
+      userId: userId,
+    });
+  } catch (error) {
+    console.warn("Error deleting user:", error);
+  }
 };
 
 /**
@@ -188,11 +188,11 @@ export const deleteUser = async (realm: string, userId: string) => {
  * @param realm realm name
  */
 export const deleteUserByName = async (realm: string, username: string) => {
-	const user = await listUsers(realm, username);
+  const user = await listUsers(realm, username);
 
-	if (user.length === 0) {
-		throw new Error(`User ${username} not found`);
-	}
+  if (user.length === 0) {
+    throw new Error(`User ${username} not found`);
+  }
 
-	await deleteUser(realm, user[0].id || "");
+  await deleteUser(realm, user[0].id || "");
 };
