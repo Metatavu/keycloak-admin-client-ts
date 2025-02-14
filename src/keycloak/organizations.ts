@@ -1,7 +1,5 @@
 import { getApiClientConfiguration } from "./api";
-import type {
-	OrganizationDomainRepresentation,
-} from "../generated/keycloak-client";
+import type { OrganizationDomainRepresentation } from "../generated/keycloak-client";
 
 /**
  * Find organization by name
@@ -21,7 +19,7 @@ export const findOrganizationByName = async (realm: string, name: string) => {
 
 /**
  * List organizations
- * 
+ *
  * @param realm realm name
  */
 export const listOrganizations = async (realm: string) => {

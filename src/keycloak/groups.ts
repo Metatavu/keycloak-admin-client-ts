@@ -2,7 +2,7 @@ import { getApiClientConfiguration } from "./api";
 
 /**
  * List keycloak groups
- * 
+ *
  * @param realm realm name
  * @param first first
  * @param max max
@@ -25,7 +25,7 @@ export const listGroups = async (
 
 /**
  * Create a new group in Keycloak
- * 
+ *
  * @param realm realm name
  * @param name group name
  */
@@ -50,7 +50,7 @@ export const createGroup = async (realm: string, name: string) => {
 
 /**
  * Delete a group in Keycloak
- * 
+ *
  * @param realm realm name
  * @param id group id
  */
@@ -73,7 +73,7 @@ export const deleteGroup = async (realm: string, id: string) => {
 
 /**
  * Delete all groups in Keycloak
- * 
+ *
  * @param realm realm name
  */
 export const deleteAllGroups = async (realm: string) => {

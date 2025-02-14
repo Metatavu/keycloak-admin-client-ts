@@ -6,7 +6,7 @@ import { listGroups } from "./groups";
  * List users in Keycloak
  * Allows to list a bunch and filter by username, email, first and max
  * If no optional parameters are provided, it will list a maximum of 100 users (Keycloak pagination limit)
- * 
+ *
  * @param realm realm name
  * @param username username
  * @param email email
@@ -34,40 +34,40 @@ const listUsers = async (
 
 /**
  * List all users in Keycloak
- * 
+ *
  * @param realm realm name
  */
 export const listAllUsers = async (realm: string) => {
-  const { usersApi } = await getApiClientConfiguration();
-  const max = 100;
-  let start = 0;
-  const allUsers: UserRepresentation[] = [];
+	const { usersApi } = await getApiClientConfiguration();
+	const max = 100;
+	let start = 0;
+	const allUsers: UserRepresentation[] = [];
 
-  // Fetch users in batches until all users are retrieved
-  while (true) {
-    const usersResponse = await usersApi.adminRealmsRealmUsersGet({
-      realm: realm,
-      max: max,
-      first: start,
-    });
+	// Fetch users in batches until all users are retrieved
+	while (true) {
+		const usersResponse = await usersApi.adminRealmsRealmUsersGet({
+			realm: realm,
+			max: max,
+			first: start,
+		});
 
-    const users = usersResponse;
-    console.log(`Fetched ${users.length} users`);
-    if (users.length === 0) {
-      break;
-    }
+		const users = usersResponse;
+		console.log(`Fetched ${users.length} users`);
+		if (users.length === 0) {
+			break;
+		}
 
-    allUsers.push(...users);
+		allUsers.push(...users);
 
-    start += max;
-  }
+		start += max;
+	}
 
-  return allUsers;
+	return allUsers;
 };
 
 /**
  * List groups belonging to a user
- * 
+ *
  * @param realm realm name
  * @param userId user id
  */
@@ -81,7 +81,7 @@ export const listUserGroups = async (realm: string, userId: string) => {
 
 /**
  * Create a new user in Keycloak if it doesn't exist
- * 
+ *
  * @param realm realm name
  * @param userData keycloak user representation
  */
@@ -116,7 +116,7 @@ export const createUserIfNotExists = async (
 
 /**
  * Update user groups in Keycloak
- * 
+ *
  * @param realm realm name
  * @param userId user id
  * @param groupNames group names
@@ -163,27 +163,27 @@ export const updateUserGroups = async (
 
 /**
  * Delete a user in Keycloak
- * 
+ *
  * @param userId user id
  * @param realm realm name
  */
 export const deleteUser = async (realm: string, userId: string) => {
-  const { usersApi } = await getApiClientConfiguration();
+	const { usersApi } = await getApiClientConfiguration();
 
-  console.log(`Deleting user with id ${userId}`);
-  try {
-    usersApi.adminRealmsRealmUsersUserIdDelete({
-      realm: realm,
-      userId: userId,
-    });
-  } catch (error) {
-    console.warn("Error deleting user:", error);
-  }
+	console.log(`Deleting user with id ${userId}`);
+	try {
+		usersApi.adminRealmsRealmUsersUserIdDelete({
+			realm: realm,
+			userId: userId,
+		});
+	} catch (error) {
+		console.warn("Error deleting user:", error);
+	}
 };
 
 /**
  * Delete a user by username
- * 
+ *
  * @param username username
  * @param realm realm name
  */
@@ -194,5 +194,5 @@ export const deleteUserByName = async (realm: string, username: string) => {
 		throw new Error(`User ${username} not found`);
 	}
 
-  await deleteUser(realm, user[0].id || "");
+	await deleteUser(realm, user[0].id || "");
 };
