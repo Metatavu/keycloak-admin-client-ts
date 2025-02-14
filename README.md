@@ -17,6 +17,15 @@
   ```sh
   npm run start
   ```
+5. Include a relevant .env file fith the following content:
+  ```
+  KEYCLOAK_BASE_URL=
+  CLIENT_ID=
+  CLIENT_SECRET=
+  AUTHENTICATION_REALM=
+  REALM=
+  CACHED_TOKEN_PATH=
+  ```
 
 # Run Instructions
 
